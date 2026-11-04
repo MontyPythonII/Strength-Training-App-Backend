@@ -1,0 +1,148 @@
+package com.workout.backend.model.exercises;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.workout.backend.model.routines.Routine;
+import com.workout.backend.model.users.User;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
+
+@Entity
+@Table(name = "exercise")
+public class Exercise
+{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false, length = 500)
+    private String description;
+
+    private boolean barbellExercise;
+
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("setNumber ASC")
+    private List<ExerciseSet> sets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("completedAt ASC, setNumber ASC")
+    private List<CompletedExerciseSet> completedSets = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "exercises")
+    private List<Routine> routines = new ArrayList<>();
+
+
+    protected Exercise() {}
+
+    public Exercise(String name, String description, boolean barbellExercise)
+    {
+        this.name = name;
+        this.description = description;
+        this.barbellExercise = barbellExercise;
+    }
+
+    public Long getId()
+    {
+        return this.id;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getDescription()
+    {
+        return this.description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public List<ExerciseSet> getSets()
+    {
+        return this.sets;
+    }
+
+    // Keeps both sides of the relationship in sync so Hibernate writes the foreign key.
+    public void addSet(ExerciseSet set)
+    {
+        sets.add(set);
+        set.setExercise(this);
+    }
+
+    public void removeSet(ExerciseSet set)
+    {
+        sets.remove(set);
+        set.setExercise(null);
+    }
+
+    public void addCompletedSet(CompletedExerciseSet completedSet)
+    {
+        completedSets.add(completedSet);
+        completedSet.setExercise(this);
+    }
+
+    public int getCompletedSetCount()
+    {
+        return this.completedSets.size();
+    }
+
+    public List<CompletedExerciseSet> getCompletedSets()
+    {
+        return this.completedSets;
+    }
+
+    public void removeCompletedSet(CompletedExerciseSet completedSet)
+    {
+        completedSets.remove(completedSet);
+        completedSet.setExercise(null);
+    }
+
+    public void setBarbellExercise(boolean barbellExercise)
+    {
+        this.barbellExercise = barbellExercise;
+    }
+
+    public boolean isBarbellExercise()
+    {
+        return this.barbellExercise;
+    }
+
+    public void addRoutine(Routine routine)
+    {
+        this.routines.add(routine);
+    }
+
+    public List<Routine> getRoutines()
+    {
+        return this.routines;
+    }
+}

@@ -1,0 +1,15 @@
+package com.workout.backend.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.workout.backend.model.users.User;
+
+public interface UserRepository extends JpaRepository<User, Long>
+{
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+}
+
