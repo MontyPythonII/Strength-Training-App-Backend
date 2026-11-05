@@ -1,13 +1,15 @@
 package com.workout.backend.service;
 
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.workout.backend.model.users.User;
 import com.workout.backend.model.users.UserType;
 import com.workout.backend.repository.UserRepository;
+import com.workout.backend.service.exceptions.EmailAlreadyRegisteredException;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService
@@ -26,8 +28,9 @@ public class UserService
     {
         if (this.userRepository.existsByEmail(email))
         {
-            throw new IllegalStateException("Email already registered");
+            throw new EmailAlreadyRegisteredException(email);
         }
+
 
         String hash = this.passwordEncoder.encode(rawPassword);
 
@@ -37,5 +40,11 @@ public class UserService
     public boolean passwordMatched(User user, String rawPassword)
     {
         return this.passwordEncoder.matches(rawPassword, user.getPasswordHash());
+    }
+
+    public User getByEmail(String email)
+    {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalStateException("Authenticated user missing: " + email));
     }
 }

@@ -17,7 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 
@@ -41,15 +40,16 @@ public class Routine
 
     @ManyToMany
     @JoinTable(
-        name = "routine_id",
+        name = "routine_exercise",
         joinColumns = @JoinColumn(name = "routine_id"),
         inverseJoinColumns = @JoinColumn(name = "exercise_id")
     )
     @OrderColumn(name = "position")
     private List<Exercise> exercises = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule")
+    @ManyToMany(mappedBy = "routinesByDay")
     private List<Schedule> schedules = new ArrayList<>();
+
 
     public Long getId()
     {
