@@ -17,9 +17,17 @@ public class ExerciseSet extends BaseExerciseSet
 
     protected ExerciseSet() {}
 
-    public ExerciseSet(int setNumber, BigDecimal weight, Integer reps, Integer distance, Integer timeSeconds)
+    public ExerciseSet(
+        int setNumber,
+        BigDecimal weight,
+        Integer reps,
+        Integer distance,
+        Integer timeSeconds,
+        String notes
+    )
     {
         super(setNumber, weight, reps, distance, timeSeconds);
+        this.notes = notes;
     }
 
     public String getNotes()

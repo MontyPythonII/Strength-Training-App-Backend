@@ -17,7 +17,7 @@ import com.workout.backend.service.UserService;
 
 import jakarta.validation.Valid;
 
-/**
+/*
  * Public endpoints for creating an account and exchanging credentials for a token.
  */
 @RestController

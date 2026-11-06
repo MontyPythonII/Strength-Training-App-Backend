@@ -8,6 +8,8 @@ import com.workout.backend.model.users.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +38,10 @@ public class Exercise
 
     private boolean barbellExercise;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 8)
+    private MeasureType measureType;
+
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("setNumber ASC")
     private List<ExerciseSet> sets = new ArrayList<>();
@@ -47,24 +53,30 @@ public class Exercise
     @ManyToMany(mappedBy = "exercises")
     private List<Routine> routines = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
 
     protected Exercise() {}
 
-    public Exercise(String name, String description, boolean barbellExercise)
+    public Exercise(
+        String name,
+        String description,
+        boolean barbellExercise,
+        MeasureType measureType
+    )
     {
         this.name = name;
         this.description = description;
         this.barbellExercise = barbellExercise;
+        this.measureType = measureType;
     }
 
     public Long getId()
     {
         return this.id;
     }
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
 
     public String getName()
     {
@@ -89,6 +101,11 @@ public class Exercise
     public List<ExerciseSet> getSets()
     {
         return this.sets;
+    }
+
+    public void setSets(List<ExerciseSet> sets)
+    {
+        this.sets = sets;
     }
 
     // Keeps both sides of the relationship in sync so Hibernate writes the foreign key.
@@ -136,6 +153,16 @@ public class Exercise
         return this.barbellExercise;
     }
 
+    public MeasureType getMeasureType()
+    {
+        return this.measureType;
+    }
+
+    public void setMeasureType(MeasureType measureType)
+    {
+        this.measureType = measureType;
+    }
+
     public void addRoutine(Routine routine)
     {
         this.routines.add(routine);
@@ -144,5 +171,15 @@ public class Exercise
     public List<Routine> getRoutines()
     {
         return this.routines;
+    }
+
+    public User getOwner()
+    {
+        return this.owner;
+    }
+
+    public void setOwner(User owner)
+    {
+        this.owner = owner;
     }
 }

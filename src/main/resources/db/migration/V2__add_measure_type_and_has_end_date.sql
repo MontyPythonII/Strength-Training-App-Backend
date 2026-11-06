@@ -1,0 +1,11 @@
+ALTER TABLE exercise
+    ADD COLUMN measure_type VARCHAR(8) NOT NULL DEFAULT 'REPS';
+
+ALTER TABLE exercise
+    ALTER COLUMN measure_type DROP DEFAULT;
+
+ALTER TABLE schedule
+    ADD COLUMN has_end_date BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE schedule
+    ALTER COLUMN has_end_date DROP DEFAULT;
