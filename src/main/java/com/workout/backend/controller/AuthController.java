@@ -1,10 +1,12 @@
 package com.workout.backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.backend.dto.auth.LoginRequest;
@@ -33,10 +35,10 @@ public class AuthController
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.tokenService = tokenService;
- 
     }
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserResponse register(
         @Valid @RequestBody RegisterUserRequest request
     )
