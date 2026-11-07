@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.backend.dto.exercise.ExerciseRequest;
 import com.workout.backend.dto.exercise.ExerciseResponse;
-//import com.workout.backend.model.exercises.Exercise;
 import com.workout.backend.repository.ExerciseRepository;
 import com.workout.backend.security.CurrentUserId;
 import com.workout.backend.service.ExerciseService;
