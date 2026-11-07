@@ -27,7 +27,7 @@ public abstract class BaseExerciseSet
 
     // Always stored as lbs. Frontends can convert to kg when needed
     @DecimalMin("0.0")
-    @Column(precision = 6, scale = 2)
+    @Column(nullable = false, precision = 6, scale = 2)
     protected BigDecimal weight;
 
     @Min(1)

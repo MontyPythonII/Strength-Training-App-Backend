@@ -6,6 +6,7 @@ import com.workout.backend.dto.set.ExerciseSetRequest;
 import com.workout.backend.model.exercises.Exercise;
 import com.workout.backend.model.exercises.MeasureType;
 
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public record ExerciseRequest
     @NotBlank @Size(max = 500) String description,
     boolean barbellExercise,
     @NotNull MeasureType measureType,
-    @NotNull List<@Valid ExerciseSetRequest> sets
+    @NotNull List<@NotNull @Valid ExerciseSetRequest> sets
 )
 {
     public Exercise toEntity()
@@ -28,7 +29,9 @@ public record ExerciseRequest
             this.barbellExercise,
             this.measureType
         );
-        this.sets.forEach(set -> exercise.addSet(set.toEntity()));
+
+        this.addSetsTo(exercise);
+
         return exercise;
     }
 
@@ -40,6 +43,14 @@ public record ExerciseRequest
         exercise.setMeasureType(this.measureType);
         
         exercise.getSets().clear();
-        this.sets.forEach(set -> exercise.addSet(set.toEntity()));
+        this.addSetsTo(exercise);
+    }
+
+    private void addSetsTo(Exercise exercise)
+    {
+        for (int i = 0; i < this.sets.size(); i++)
+        {
+            exercise.addSet(this.sets.get(i).toEntity(i + 1));
+        }
     }
 }

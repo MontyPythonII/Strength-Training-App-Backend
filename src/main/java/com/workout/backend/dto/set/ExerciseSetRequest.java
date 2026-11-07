@@ -8,21 +8,21 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 public record ExerciseSetRequest
 (
-    @Min(1) int setNumber,
-    @DecimalMin("0.0") BigDecimal weight,
+    @DecimalMin("0.0") @NotNull BigDecimal weight,
     @Min(1) @Max(200) Integer reps,
     @Min(1) Integer distance,
     @Min(1) Integer timeSeconds,
     @Size(max = 500) String notes
 )
 {
-    public ExerciseSet toEntity()
+    public ExerciseSet toEntity(int setNumber)
     {
         ExerciseSet set = new ExerciseSet(
-            this.setNumber,
+            setNumber,
             this.weight,
             this.reps,
             this.distance,
