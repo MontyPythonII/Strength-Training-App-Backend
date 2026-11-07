@@ -50,10 +50,30 @@ public class Routine
     @ManyToMany(mappedBy = "routinesByDay")
     private List<Schedule> schedules = new ArrayList<>();
 
+    protected Routine() {}
+
+    public Routine(
+        String name,
+        String description
+    )
+    {
+        this.name = name;
+        this.description = description;
+    }
 
     public Long getId()
     {
         return this.id;
+    }
+
+    public User getOwner()
+    {
+        return this.owner;
+    }
+
+    public void setOwner(User owner)
+    {
+        this.owner = owner;
     }
 
     public String getName()
