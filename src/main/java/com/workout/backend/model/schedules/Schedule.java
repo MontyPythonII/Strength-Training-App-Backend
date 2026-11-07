@@ -62,11 +62,17 @@ public class Schedule
 
     protected Schedule() {}
 
-    public Schedule(User owner, String name, String description)
+    public Schedule(
+        User owner,
+        String name,
+        String description,
+        Map<DayOfWeek, Routine> routinesByDay
+    )
     {
         this.owner = owner;
         this.name = name;
         this.description = description;
+        this.routinesByDay = routinesByDay;
     }
 
     public Long getId()
