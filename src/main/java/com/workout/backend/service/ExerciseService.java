@@ -10,7 +10,7 @@ import com.workout.backend.model.exercises.Exercise;
 import com.workout.backend.model.users.User;
 import com.workout.backend.repository.ExerciseRepository;
 import com.workout.backend.repository.UserRepository;
-import com.workout.backend.service.exceptions.ExerciseNotFoundException;
+import com.workout.backend.service.exceptions.ModelNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class ExerciseService
     )
     {
         Exercise exercise = this.exerciseRepository.findByIdAndOwnerId(exerciseId, ownerId)
-            .orElseThrow(() -> new ExerciseNotFoundException(exerciseId));
+            .orElseThrow(() -> new ModelNotFoundException(Exercise.class, exerciseId));
         
         return ExerciseResponse.from(exercise);
     }
