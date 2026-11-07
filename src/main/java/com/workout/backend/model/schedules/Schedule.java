@@ -1,12 +1,15 @@
 package com.workout.backend.model.schedules;
 
+import com.workout.backend.model.groups.AthleteGroup;
 import com.workout.backend.model.routines.Routine;
 import com.workout.backend.model.users.User;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +25,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.FetchType;
 
@@ -49,6 +53,9 @@ public class Schedule
 
     @Column(nullable = false)
     private boolean hasEndDate;
+
+    @OneToMany(mappedBy = "activeSchedule")
+    private List<AthleteGroup> groups = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -143,6 +150,12 @@ public class Schedule
     public Map<DayOfWeek, Routine> getRoutinesByDay()
     {
         return Collections.unmodifiableMap(this.routinesByDay);
+    }
+
+    // Read-only because a group is attached through AthleteGroup.setActiveSchedule, which owns the foreign key
+    public List<AthleteGroup> getGroups()
+    {
+        return Collections.unmodifiableList(this.groups);
     }
 
     public boolean getHasEndDate()

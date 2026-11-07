@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.workout.backend.model.exercises.Exercise;
+import com.workout.backend.model.groups.AthleteGroup;
 import com.workout.backend.model.routines.Routine;
 import com.workout.backend.model.schedules.Schedule;
 
@@ -11,9 +12,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -39,6 +43,9 @@ public class User
     private UserType userType;
 
     @OneToMany(mappedBy = "owner")
+    private List<AthleteGroup> groups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner")
     private List<Schedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner")
@@ -46,6 +53,17 @@ public class User
 
     @OneToMany(mappedBy = "owner")
     private List<Exercise> exercises = new ArrayList<>();
+
+    @OneToMany(mappedBy = "coach")
+    private List<User> athletes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "coach_id")
+    private User coach;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "athlete_group_id")
+    private AthleteGroup athleteGroup;
 
     protected User() {}
 
@@ -105,6 +123,59 @@ public class User
     public void removeSchedule(Schedule schedule)
     {
         schedules.remove(schedule);
+    }
+
+    public List<AthleteGroup> getGroups()
+    {
+        return groups;
+    }
+
+    public void addGroup(AthleteGroup athleteGroup)
+    {
+        groups.add(athleteGroup);
+    }
+
+    public void removeGroup(AthleteGroup athleteGroup)
+    {
+        groups.remove(athleteGroup);
+    }
+
+    public List<User> getAthletes()
+    {
+        return athletes;
+    }
+
+    // Only coach_id is persisted, so the athlete's side has to change too or the save is a no-op
+    public void addAthlete(User athlete)
+    {
+        athletes.add(athlete);
+        athlete.setCoach(this);
+    }
+
+    public void removeAthlete(User athlete)
+    {
+        athletes.remove(athlete);
+        athlete.setCoach(null);
+    }
+
+    public User getCoach()
+    {
+        return coach;
+    }
+
+    public void setCoach(User coach)
+    {
+        this.coach = coach;
+    }
+
+    public AthleteGroup getAthleteGroup()
+    {
+        return athleteGroup;
+    }
+
+    public void setAthleteGroup(AthleteGroup group)
+    {
+        this.athleteGroup = group;
     }
 
     public String getPasswordHash()
