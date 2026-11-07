@@ -48,7 +48,7 @@ public class ScheduleService
 
         request.routineIdsByDay()
             .forEach((day, routineId) -> routinesByDay.put(day, this.routineRepository
-                .findById(routineId)
+                .findByIdAndOwnerId(routineId, ownerId)
                 .orElseThrow(() -> new ModelNotFoundException(Routine.class, routineId))));
 
         Schedule schedule = new Schedule(
