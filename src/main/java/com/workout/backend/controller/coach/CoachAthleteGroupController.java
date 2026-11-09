@@ -1,4 +1,4 @@
-package com.workout.backend.controller;
+package com.workout.backend.controller.coach;
 
 import java.util.List;
 
@@ -13,18 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.backend.dto.athleteGroup.AthleteGroupRequest;
 import com.workout.backend.dto.athleteGroup.AthleteGroupResponse;
+import com.workout.backend.security.CoachOnly;
 import com.workout.backend.security.CurrentUserId;
 import com.workout.backend.service.AthleteGroupService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/athlete-groups")
-public class AthleteGroupController
+@RequestMapping("/api/coach/athlete-groups")
+@CoachOnly
+public class CoachAthleteGroupController
 {
     private final AthleteGroupService athleteGroupService;
 
-    public AthleteGroupController(
+    public CoachAthleteGroupController(
         AthleteGroupService athleteGroupService
     )
     {

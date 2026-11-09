@@ -1,4 +1,4 @@
-package com.workout.backend.controller;
+package com.workout.backend.controller.coach;
 
 import java.util.List;
 
@@ -11,50 +11,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.workout.backend.dto.routine.RoutineRequest;
-import com.workout.backend.dto.routine.RoutineResponse;
+import com.workout.backend.dto.schedule.ScheduleRequest;
+import com.workout.backend.dto.schedule.ScheduleResponse;
+import com.workout.backend.security.CoachOnly;
 import com.workout.backend.security.CurrentUserId;
-import com.workout.backend.service.RoutineService;
+import com.workout.backend.service.ScheduleService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/routines")
-public class RoutineController
+@RequestMapping("/api/coach/schedules")
+@CoachOnly
+public class CoachScheduleController
 {
-    private final RoutineService routineService;
+    private final ScheduleService scheduleService;
 
-    public RoutineController(
-        RoutineService routineService
+    public CoachScheduleController(
+        ScheduleService scheduleService
     )
     {
-        this.routineService = routineService;
+        this.scheduleService = scheduleService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RoutineResponse createRoutine(
-        @RequestBody @Valid RoutineRequest request,
+    public ScheduleResponse createSchedule(
+        @RequestBody @Valid ScheduleRequest request,
         @CurrentUserId Long userId
     )
     {
-        return this.routineService.create(userId, request);
+        return this.scheduleService.create(userId, request);
     }
 
     @GetMapping("/{id}")
-    public RoutineResponse getRoutine(
+    public ScheduleResponse getSchedule(
         @PathVariable Long id,
         @CurrentUserId Long userId
     )
     {
-        return this.routineService.get(id, userId);
+        return this.scheduleService.get(id, userId);
     }
 
     @GetMapping
-    public List<RoutineResponse> listRoutines(
+    public List<ScheduleResponse> listSchedules(
         @CurrentUserId Long userId
     )
     {
-        return this.routineService.get(userId);
+        return this.scheduleService.get(userId);
     }
 }
