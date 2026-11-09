@@ -28,6 +28,7 @@ import com.workout.backend.service.exceptions.InvalidInviteCodeException;
 import com.workout.backend.service.exceptions.ModelNotFoundException;
 import com.workout.backend.service.exceptions.NoActiveScheduleException;
 import com.workout.backend.service.exceptions.NoRoutineForGivenDayException;
+import com.workout.backend.service.exceptions.RoutineAlreadyCompletedException;
 import com.workout.backend.service.exceptions.WrongRoutineForDayException;
 
 /**
@@ -107,9 +108,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(WrongRoutineForDayException.class)
-    public ProblemDetail WrongRoutineForDay(WrongRoutineForDayException exception)
+    public ProblemDetail handleWrongRoutineForDay(WrongRoutineForDayException exception)
     {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(RoutineAlreadyCompletedException.class)
+    public ProblemDetail handleRoutineAlreadyCompleted(RoutineAlreadyCompletedException exception)
+    {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
     }
 
     // One field can fail several constraints, so the merge function keeps the first message rather than throwing on a duplicate key.

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import com.workout.backend.repository.UserRepository;
 import com.workout.backend.service.exceptions.ModelNotFoundException;
 import com.workout.backend.service.exceptions.NoActiveScheduleException;
 import com.workout.backend.service.exceptions.NoRoutineForGivenDayException;
+import com.workout.backend.service.exceptions.RoutineAlreadyCompletedException;
 import com.workout.backend.service.exceptions.WrongRoutineForDayException;
 
 @Service 
@@ -147,7 +150,9 @@ public class RoutineService
             throw new NoActiveScheduleException();
         }
 
-        Routine routine = group.getActiveSchedule().getRoutinesByDay().get(LocalDate.now(timeZone).getDayOfWeek());
+        LocalDate today = LocalDate.now(timeZone);
+
+        Routine routine = group.getActiveSchedule().getRoutinesByDay().get(today.getDayOfWeek());
 
         if (routine == null)
         {
@@ -159,7 +164,12 @@ public class RoutineService
             throw new WrongRoutineForDayException();
         }
 
-        CompletedRoutine completedRoutine = new CompletedRoutine(athlete, routine);
+        if (this.completedRoutineRepository.existsByAthleteIdAndCompletedOn(athleteId, today))
+        {
+            throw new RoutineAlreadyCompletedException();
+        }
+
+        CompletedRoutine completedRoutine = new CompletedRoutine(athlete, routine, today);
 
         for (CompletedExerciseRequest exerciseRequest : request.completedExercises())
         {
@@ -167,7 +177,21 @@ public class RoutineService
             completedRoutine.addCompletedExercise(exerciseRequest.toEntity(exercise));
         }
 
-        return (CompletedRoutineResponse.from(this.completedRoutineRepository.save(completedRoutine)));
+        try
+        {
+            return CompletedRoutineResponse.from(this.completedRoutineRepository.saveAndFlush(completedRoutine));
+        }
+        catch (DataIntegrityViolationException exception)
+        {
+            // Only the per-day unique constraint means a duplicate; anything else is a real bug and should surface
+            if (exception.getCause() instanceof ConstraintViolationException violation
+                && "uq_completed_routine_athlete_day".equals(violation.getConstraintName()))
+            {
+                throw new RoutineAlreadyCompletedException();
+            }
+
+            throw exception;
+        }
     }
 
     private List<Exercise> resolveExercisesInOrder(

@@ -1,6 +1,7 @@
 package com.workout.backend.model.routines;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,12 +21,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * A workout an athlete logged. Name and description are copied from the routine so history survives the coach editing or deleting it.
  */
 @Entity
-@Table(name = "completed_routine")
+@Table(name = "completed_routine", uniqueConstraints = @UniqueConstraint(columnNames = {"athlete_id", "completed_on"}))
 public class CompletedRoutine
 {
     @Id
@@ -50,19 +52,25 @@ public class CompletedRoutine
     @Column(nullable = false)
     private Instant completedAt = Instant.now();
 
+    // The calendar day the workout counts for, so the database can enforce one log per athlete per day
+    @Column(nullable = false)
+    private LocalDate completedOn;
+
     @OneToMany(mappedBy = "completedRoutine", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("position ASC")
     private List<CompletedExercise> completedExercises = new ArrayList<>();
 
     protected CompletedRoutine() {}
 
-    public CompletedRoutine(User athlete, Routine routine)
+    public CompletedRoutine(User athlete, Routine routine, LocalDate completedOn)
     {
         this.athlete = athlete;
         this.routine = routine;
         this.name = routine.getName();
         this.description = routine.getDescription();
+        this.completedOn = completedOn;
     }
+
 
     public Long getId()
     {
