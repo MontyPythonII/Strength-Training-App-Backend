@@ -3,12 +3,9 @@ package com.workout.backend.model.exercises;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
@@ -40,10 +37,6 @@ public abstract class BaseExerciseSet
 
     @Min(1)
     protected Integer timeSeconds;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exercise_id", nullable = false)
-    protected Exercise exercise;
 
     protected BaseExerciseSet() {}
 
@@ -109,15 +102,5 @@ public abstract class BaseExerciseSet
     public void setTimeSeconds(Integer timeSeconds)
     {
         this.timeSeconds = timeSeconds;
-    }
-
-    public Exercise getExercise()
-    {
-        return this.exercise;
-    }
-
-    public void setExercise(Exercise exercise)
-    {
-        this.exercise = exercise;
     }
 }

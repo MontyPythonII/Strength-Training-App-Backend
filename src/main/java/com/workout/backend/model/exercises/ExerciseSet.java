@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -14,6 +17,10 @@ public class ExerciseSet extends BaseExerciseSet
 {
     @Column(length = 500)
     private String notes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id", nullable = false)
+    protected Exercise exercise;
 
     protected ExerciseSet() {}
 
@@ -38,5 +45,15 @@ public class ExerciseSet extends BaseExerciseSet
     public void setNotes(String notes)
     {
         this.notes = notes;
+    }
+
+    public Exercise getExercise()
+    {
+        return this.exercise;
+    }
+
+    public void setExercise(Exercise exercise)
+    {
+        this.exercise = exercise;
     }
 }

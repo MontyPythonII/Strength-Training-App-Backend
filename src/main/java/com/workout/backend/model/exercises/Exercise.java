@@ -46,10 +46,6 @@ public class Exercise
     @OrderBy("setNumber ASC")
     private List<ExerciseSet> sets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("completedAt ASC, setNumber ASC")
-    private List<CompletedExerciseSet> completedSets = new ArrayList<>();
-
     @ManyToMany(mappedBy = "exercises")
     private List<Routine> routines = new ArrayList<>();
 
@@ -119,28 +115,6 @@ public class Exercise
     {
         sets.remove(set);
         set.setExercise(null);
-    }
-
-    public void addCompletedSet(CompletedExerciseSet completedSet)
-    {
-        completedSets.add(completedSet);
-        completedSet.setExercise(this);
-    }
-
-    public int getCompletedSetCount()
-    {
-        return this.completedSets.size();
-    }
-
-    public List<CompletedExerciseSet> getCompletedSets()
-    {
-        return this.completedSets;
-    }
-
-    public void removeCompletedSet(CompletedExerciseSet completedSet)
-    {
-        completedSets.remove(completedSet);
-        completedSet.setExercise(null);
     }
 
     public void setBarbellExercise(boolean barbellExercise)

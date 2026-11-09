@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.workout.backend.model.exercises.Exercise;
 import com.workout.backend.model.groups.AthleteGroup;
+import com.workout.backend.model.routines.CompletedRoutine;
 import com.workout.backend.model.routines.Routine;
 import com.workout.backend.model.schedules.Schedule;
 
@@ -64,6 +65,10 @@ public class User
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "athlete_group_id")
     private AthleteGroup athleteGroup;
+
+    @OneToMany(mappedBy = "athlete")
+    private List<CompletedRoutine> completedRoutines = new ArrayList<>();
+
 
     protected User() {}
 
@@ -152,6 +157,21 @@ public class User
     public void removeSchedule(Schedule schedule)
     {
         schedules.remove(schedule);
+    }
+
+    public List<Routine> getRoutines()
+    {
+        return routines;
+    }
+
+    public List<Exercise> getExercises()
+    {
+        return exercises;
+    }
+
+    public List<CompletedRoutine> getCompletedRoutines()
+    {
+        return completedRoutines;
     }
 
     public List<AthleteGroup> getGroups()
