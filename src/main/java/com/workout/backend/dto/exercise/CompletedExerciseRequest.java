@@ -20,6 +20,7 @@ public record CompletedExerciseRequest
     {
         CompletedExercise completedExercise = new CompletedExercise(exercise);
 
+        // Set numbers come from the order the athlete sent them, starting at 1
         for (int i = 0; i < this.completedSets.size(); i++)
         {
             completedExercise.addCompletedSet(this.completedSets.get(i).toEntity(i + 1));

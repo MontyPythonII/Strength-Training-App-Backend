@@ -107,6 +107,7 @@ public class RoutineService
         Long athleteId
     )
     {
+        // The same routine can be scheduled on several days, so only return it once
         return this.scheduleService.getByAthleteId(athleteId).routinesByDay()
             .values()
             .stream()
@@ -174,6 +175,7 @@ public class RoutineService
         List<Long> exerciseIds
     )
     {
+        // One query for every id, then rebuilt in request order since IN doesn't keep it. Missing ids also catch exercises the coach doesn't own.
         Map<Long, Exercise> byExercise = this.exerciseRepository
             .findByOwnerIdAndIdIn(ownerId, exerciseIds)
             .stream()

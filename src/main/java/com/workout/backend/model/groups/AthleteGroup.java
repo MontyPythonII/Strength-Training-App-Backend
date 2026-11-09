@@ -27,6 +27,7 @@ public class AthleteGroup
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Random UUID rather than anything sequential so codes can't be guessed
     @Column(nullable = false, unique = true)
     private UUID inviteCode = UUID.randomUUID();
 
@@ -112,7 +113,7 @@ public class AthleteGroup
         return Collections.unmodifiableList(this.athletes);
     }
 
-    // Membership is persisted through User.group, so the athlete's side has to change too or the save is a no-op
+    // Membership is persisted through User.athleteGroup, so the athlete's side has to change too or the save is a no-op
     public void addAthlete(User athlete)
     {
         this.athletes.add(athlete);

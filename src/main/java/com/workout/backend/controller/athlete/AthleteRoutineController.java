@@ -58,6 +58,7 @@ public class AthleteRoutineController
     @ResponseStatus(HttpStatus.CREATED)
     public CompletedRoutineResponse completeRoutine(
         @RequestBody @Valid CompletedRoutineRequest request,
+        // IANA zone like America/Chicago so "today" is the athlete's day, not the server's
         @RequestHeader("X-Time-Zone") ZoneId timZone,
         @CurrentUserId Long athleteId
     )

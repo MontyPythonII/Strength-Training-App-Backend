@@ -48,6 +48,7 @@ public class ScheduleService
 
         Map<DayOfWeek, Routine> routinesByDay = new HashMap<>();
 
+        // Looked up by owner so a coach can't put another coach's routine on their schedule
         request.routineIdsByDay()
             .forEach((day, routineId) -> routinesByDay.put(day, this.routineRepository
                 .findByIdAndOwnerId(routineId, ownerId)

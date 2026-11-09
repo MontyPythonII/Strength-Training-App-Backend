@@ -65,6 +65,7 @@ public class AuthController
         @Valid @RequestBody LoginRequest request
     )
     {
+        // Throws on bad credentials, so getting past this means the user exists and the password matched
         this.authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );

@@ -84,6 +84,7 @@ public class AthleteGroupService
         Long ownerId
     )
     {
+        // A group can be created before the coach has built a schedule for it
         if (scheduleId == null)
         {
             return null;

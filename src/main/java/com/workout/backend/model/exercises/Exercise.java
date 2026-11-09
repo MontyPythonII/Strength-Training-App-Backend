@@ -38,6 +38,7 @@ public class Exercise
 
     private boolean barbellExercise;
 
+    // Sized to fit DISTANCE, bump it if a longer measure type gets added
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 8)
     private MeasureType measureType;

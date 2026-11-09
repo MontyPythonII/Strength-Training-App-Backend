@@ -44,11 +44,13 @@ public class SecurityConfig
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
+        // CSRF rides on cookies, and this API only takes bearer tokens, so there's nothing for it to protect
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(
                 auth -> auth
+                // /error stays open so a failed request shows its real error instead of a blanket 401
                 .requestMatchers("/api/auth/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
@@ -63,6 +65,7 @@ public class SecurityConfig
     @Bean
     public PasswordEncoder passwordEncoder()
     {
+        // Hashes get an algorithm prefix like {bcrypt}, so the algorithm can change later without breaking old passwords
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
@@ -84,6 +87,7 @@ public class SecurityConfig
         return NimbusJwtDecoder.withSecretKey(this.secretKey()).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
+    // HS256 needs a secret of at least 32 bytes or signing tokens will fail
     private SecretKey secretKey()
     {
         byte[] bytes = this.jwtProperties.secret().getBytes(StandardCharsets.UTF_8);

@@ -48,7 +48,7 @@ public class CompletedExerciseSet extends BaseExerciseSet
         return this.completedExercise;
     }
 
-    // Package-private so the link is only set through CompletedExercise.addSet, which keeps both sides in sync
+    // Package-private so the link is only set through CompletedExercise.addCompletedSet, which keeps both sides in sync
     void setCompletedExercise(CompletedExercise completedExercise)
     {
         this.completedExercise = completedExercise;

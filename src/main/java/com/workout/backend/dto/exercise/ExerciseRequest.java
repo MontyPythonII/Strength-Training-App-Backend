@@ -48,6 +48,7 @@ public record ExerciseRequest
 
     private void addSetsTo(Exercise exercise)
     {
+        // Set numbers come from list order and start at 1 to satisfy @Min(1) on setNumber
         for (int i = 0; i < this.sets.size(); i++)
         {
             exercise.addSet(this.sets.get(i).toEntity(i + 1));

@@ -54,6 +54,7 @@ public class UserService
 
     public User getByEmail(String email)
     {
+        // Only called after the login already authenticated, so a missing user here means something is actually broken
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new IllegalStateException("Authenticated user missing: " + email));
     }

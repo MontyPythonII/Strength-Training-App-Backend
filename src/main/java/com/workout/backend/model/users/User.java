@@ -33,16 +33,19 @@ public class User
     @Column(nullable = false, length = 100)
     private String displayName;
 
+    // 254 is the longest a valid email address can be
     @Column(nullable = false, unique = true, length = 254)
     private String email;
 
     @Column(nullable = false, length = 255)
     private String passwordHash;
 
+    // Sized to fit ATHLETE, bump it if a longer role gets added
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 7)
     private UserType userType;
 
+    // Coaches and athletes share this table. These collections are only filled in for coaches.
     @OneToMany(mappedBy = "owner")
     private List<AthleteGroup> groups = new ArrayList<>();
 
@@ -58,6 +61,7 @@ public class User
     @OneToMany(mappedBy = "coach")
     private List<User> athletes = new ArrayList<>();
 
+    // Athlete-only fields
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "coach_id")
     private User coach;

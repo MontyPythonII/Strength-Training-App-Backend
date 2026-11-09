@@ -31,8 +31,7 @@ import com.workout.backend.service.exceptions.NoRoutineForGivenDayException;
 import com.workout.backend.service.exceptions.WrongRoutineForDayException;
 
 /**
- * Translates exceptions escaping any controller into consistent ProblemDetail responses with the right HTTP status.
- * Extends ResponseEntityExceptionHandler so Spring Boot's own ProblemDetails advice backs off instead of shadowing these handlers.
+ * Translates exceptions escaping any controller into consistent ProblemDetail responses with the right HTTP status. Extends ResponseEntityExceptionHandler so Spring Boot's own ProblemDetails advice backs off instead of shadowing these handlers.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler
@@ -64,8 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.badRequest().body(problem);
     }
 
-    // Covers BadCredentialsException, DisabledException, LockedException and the rest of the AuthenticationException tree.
-    // Message is fixed so the response never reveals whether the email exists.
+    // Covers BadCredentialsException, DisabledException, LockedException and the rest of the AuthenticationException tree. Message is fixed so the response never reveals whether the email exists.
     @ExceptionHandler(AuthenticationException.class)
     public ProblemDetail handleAuthentication(AuthenticationException exception)
     {
