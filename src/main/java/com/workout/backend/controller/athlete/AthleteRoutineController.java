@@ -54,16 +54,16 @@ public class AthleteRoutineController
         return this.routineService.getByAthleteId(day, athleteId);
     }
 
-    @PostMapping("/complete{routineId}")
+    @PostMapping("/complete")
     @ResponseStatus(HttpStatus.CREATED)
     public CompletedRoutineResponse completeRoutine(
         @RequestBody @Valid CompletedRoutineRequest request,
         // IANA zone like America/Chicago so "today" is the athlete's day, not the server's
-        @RequestHeader("X-Time-Zone") ZoneId timZone,
+        @RequestHeader("X-Time-Zone") ZoneId timeZone,
         @CurrentUserId Long athleteId
     )
     {
-        return this.routineService.complete(athleteId, request, timZone);
+        return this.routineService.complete(athleteId, request, timeZone);
     }
 
 }
