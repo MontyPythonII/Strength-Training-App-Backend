@@ -3,6 +3,7 @@ package com.workout.backend.model.groups;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import com.workout.backend.model.schedules.Schedule;
 import com.workout.backend.model.users.User;
@@ -25,6 +26,9 @@ public class AthleteGroup
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private UUID inviteCode = UUID.randomUUID();
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -61,6 +65,11 @@ public class AthleteGroup
     public Long getId()
     {
         return this.id;
+    }
+
+    public UUID getInviteCode()
+    {
+        return this.inviteCode;
     }
 
     public String getName()

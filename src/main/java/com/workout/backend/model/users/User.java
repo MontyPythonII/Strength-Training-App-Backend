@@ -67,12 +67,41 @@ public class User
 
     protected User() {}
 
-    public User(String email, String displayName, UserType userType, String passwordHash)
+    private User(
+        UserType userType,
+        String email,
+        String displayName,
+        String passwordHash
+    )
     {
+        this.userType = userType;
         this.email = email;
         this.displayName = displayName;
-        this.userType = userType;
         this.passwordHash = passwordHash;
+    }
+
+    public static User coach(
+        String email,
+        String displayName,
+        String passwordHash
+    )
+    {
+        return new User(UserType.COACH, email, displayName, passwordHash);
+    }
+
+    // An athlete's coach is whoever owns the group they joined through, so both are set together
+    public static User athlete(
+        AthleteGroup athleteGroup,
+        String email,
+        String displayName,
+        String passwordHash
+    )
+    {
+        User athlete = new User(UserType.ATHLETE, email, displayName, passwordHash);
+        athlete.athleteGroup = athleteGroup;
+        athlete.coach = athleteGroup.getOwner();
+
+        return athlete;
     }
 
     public Long getId()

@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.backend.dto.auth.LoginRequest;
-import com.workout.backend.dto.auth.RegisterUserRequest;
+import com.workout.backend.dto.auth.RegisterAthleteRequest;
+import com.workout.backend.dto.auth.RegisterCoachRequest;
 import com.workout.backend.dto.auth.TokenResponse;
 import com.workout.backend.dto.auth.UserResponse;
 import com.workout.backend.model.users.User;
@@ -37,13 +38,24 @@ public class AuthController
         this.tokenService = tokenService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/coach/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse register(
-        @Valid @RequestBody RegisterUserRequest request
+    public UserResponse registerCoach(
+        @Valid @RequestBody RegisterCoachRequest request
     )
     {
-        User user = this.userService.register(request.email(), request.displayName(), request.userType(), request.password());
+        User user = this.userService.registerCoach(request.email(), request.displayName(), request.password());
+
+        return UserResponse.from(user);
+    }
+
+    @PostMapping("/athlete/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse registerAthlete(
+        @Valid @RequestBody RegisterAthleteRequest request
+    )
+    {
+        User user = this.userService.registerAthlete(request.inviteCode(), request.email(), request.displayName(), request.password());
 
         return UserResponse.from(user);
     }

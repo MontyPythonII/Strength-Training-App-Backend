@@ -24,6 +24,7 @@ import tools.jackson.core.JacksonException.Reference;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.databind.exc.InvalidFormatException;
 import com.workout.backend.service.exceptions.EmailAlreadyRegisteredException;
+import com.workout.backend.service.exceptions.InvalidInviteCodeException;
 import com.workout.backend.service.exceptions.ModelNotFoundException;
 
 /**
@@ -76,6 +77,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(ModelNotFoundException.class)
     public ProblemDetail handleNotFound(ModelNotFoundException exception)
+    {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidInviteCodeException.class)
+    public ProblemDetail handleInvalidInviteCode(InvalidInviteCodeException exception)
     {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
     }
