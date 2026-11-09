@@ -1,7 +1,7 @@
 package com.workout.backend.dto.schedule;
 
 import java.time.DayOfWeek;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.workout.backend.dto.routine.RoutineResponse;
@@ -17,7 +17,8 @@ public record ScheduleResponse
 {
     public static ScheduleResponse from(Schedule schedule)
     {
-        Map<DayOfWeek, RoutineResponse> routineResponses = new HashMap<>();
+        // EnumMap iterates in declaration order, so clients always get the days Monday through Sunday
+        Map<DayOfWeek, RoutineResponse> routineResponses = new EnumMap<>(DayOfWeek.class);
 
         schedule.getRoutinesByDay()
             .forEach((day, routine) -> routineResponses.put(day, RoutineResponse.from(routine)));
