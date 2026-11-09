@@ -26,6 +26,9 @@ import tools.jackson.databind.exc.InvalidFormatException;
 import com.workout.backend.service.exceptions.EmailAlreadyRegisteredException;
 import com.workout.backend.service.exceptions.InvalidInviteCodeException;
 import com.workout.backend.service.exceptions.ModelNotFoundException;
+import com.workout.backend.service.exceptions.NoActiveScheduleException;
+import com.workout.backend.service.exceptions.NoRoutineForGivenDayException;
+import com.workout.backend.service.exceptions.WrongRoutineForDayException;
 
 /**
  * Translates exceptions escaping any controller into consistent ProblemDetail responses with the right HTTP status.
@@ -91,6 +94,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler
     public ProblemDetail handleAccessDenied(AccessDeniedException exception)
     {
         return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied");
+    }
+
+    @ExceptionHandler(NoActiveScheduleException.class)
+    public ProblemDetail handleNoActiveSchedule(NoActiveScheduleException exception)
+    {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(NoRoutineForGivenDayException.class)
+    public ProblemDetail handleNoRoutineForGivenDay(NoRoutineForGivenDayException exception)
+    {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(WrongRoutineForDayException.class)
+    public ProblemDetail WrongRoutineForDay(WrongRoutineForDayException exception)
+    {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     // One field can fail several constraints, so the merge function keeps the first message rather than throwing on a duplicate key.

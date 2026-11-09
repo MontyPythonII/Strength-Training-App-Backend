@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.workout.backend.dto.schedule.ScheduleRequest;
 import com.workout.backend.dto.schedule.ScheduleResponse;
+import com.workout.backend.model.groups.AthleteGroup;
 import com.workout.backend.model.routines.Routine;
 import com.workout.backend.model.schedules.Schedule;
 import com.workout.backend.model.users.User;
@@ -17,6 +18,7 @@ import com.workout.backend.repository.RoutineRepository;
 import com.workout.backend.repository.ScheduleRepository;
 import com.workout.backend.repository.UserRepository;
 import com.workout.backend.service.exceptions.ModelNotFoundException;
+import com.workout.backend.service.exceptions.NoActiveScheduleException;
 
 @Service 
 public class ScheduleService
@@ -84,5 +86,39 @@ public class ScheduleService
             .stream()
             .map(ScheduleResponse::from)
             .toList();
+    }
+
+    @Transactional
+    public ScheduleResponse getByAthleteId(
+        Long athleteId
+    )
+    {
+        User athlete = this.userRepository.getReferenceById(athleteId);
+
+        AthleteGroup group = athlete.getAthleteGroup();
+
+        if (group == null || group.getActiveSchedule() == null)
+        {
+            throw new NoActiveScheduleException();
+        }
+
+        return ScheduleResponse.from(group.getActiveSchedule());
+    }
+
+    @Transactional
+    public Schedule getScheduleByAthleteId(
+        Long athleteId
+    )
+    {
+        User athlete = this.userRepository.getReferenceById(athleteId);
+
+        AthleteGroup group = athlete.getAthleteGroup();
+
+        if (group == null || group.getActiveSchedule() == null)
+        {
+            throw new NoActiveScheduleException();
+        }
+
+        return group.getActiveSchedule();
     }
 }
