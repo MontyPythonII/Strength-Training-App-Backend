@@ -1,0 +1,15 @@
+# Keep secrets and local state out of the build context so they can never end up in an image layer
+.env
+.env.*
+.git
+.gitignore
+.gitattributes
+
+target
+.vscode
+.idea
+HELP.md
+
+Dockerfile
+.dockerignore
+compose*.yaml

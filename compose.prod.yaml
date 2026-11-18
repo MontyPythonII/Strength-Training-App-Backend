@@ -1,0 +1,40 @@
+# Production stack. compose.yaml stays dev-only because Spring Boot starts that one automatically when the app runs locally.
+# Fixed project name so the database volume keeps its name even if this folder is renamed or moved.
+name: workout-backend
+
+services:
+  app:
+    build: .
+    image: workout-backend:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/workout
+      SPRING_DATASOURCE_USERNAME: workout
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      # Loopback only. Docker-published ports skip the host firewall, so the reverse proxy should be the only way in.
+      - '127.0.0.1:8081:8081'
+
+  postgres:
+    # Same major version as dev. Major upgrades need a dump and restore, so this is pinned on purpose.
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: workout
+      POSTGRES_USER: workout
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      # Postgres 18 keeps its data under /var/lib/postgresql/18, so the mount sits one level above the old /data path
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U workout -d workout']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:
